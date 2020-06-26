@@ -5,7 +5,6 @@ import { Collapse, Button, ButtonGroup, Tooltip } from 'reactstrap';
 
 import CalendarPanel from './CalendarPanel.jsx';
 import PostForm from './PostForm';
-import ListFeature from './ListFeature';
 // https://github.com/mdbootstrap/React-Bootstrap-with-Material-Design/issues/28
 // SSR NOT SUPPORTED
 
@@ -17,15 +16,12 @@ class Menu extends React.Component {
             isOpen: false,
             postIsOpen: false,
             calendarIsOpen: false,
-            listViewIsOpen: false,
             menuToolTipOpen: false,
-            listToolTipOpen: false,
         };
 
         this.toggleMenu = this.toggleMenu.bind(this);
         this.togglePostForm = this.togglePostForm.bind(this);
         this.toggleCalendar = this.toggleCalendar.bind(this);
-        this.toggleListView = this.toggleListView.bind(this);
     }
 
     toggleMenu() {
@@ -40,18 +36,11 @@ class Menu extends React.Component {
         this.setState({ calendarIsOpen: !this.state.calendarIsOpen });
     }
 
-    toggleListView() {
-        this.setState({ listViewIsOpen: !this.state.listViewIsOpen});
-    }
-
     render() {
-        const { isOpen, postIsOpen, calendarIsOpen, listViewIsOpen, menuToolTipOpen, listToolTipOpen} = this.state;
+        const { isOpen, postIsOpen, calendarIsOpen, menuToolTipOpen } = this.state;
         const { events, groups, csrfToken, images, user } = this.props;
 
         return (
-          <div>
-
-          {/** Button to display calendar and create new posts **/}
             <div className="d-flex flex-row-reverse pr-2 fixed-bottom pb-5">
                 <Button color="primary" className="btn btn-lg btn-danger" id="menuToolTip" onClick={this.toggleMenu}>
                     <i className="fas fa-plus" />
@@ -72,20 +61,6 @@ class Menu extends React.Component {
                 <CalendarPanel toggleCalendar={this.toggleCalendar} events={events} groups={groups} csrfToken={csrfToken} user={user} modal={calendarIsOpen} images={images} />
                 <PostForm togglePostForm={this.togglePostForm} groups={groups} csrfToken={this.props.csrfToken} modal={postIsOpen} />
             </div>
-
-            {/** Button to activate list format **/}
-            <div className="d-flex flex-row-reverse pr-2 fixed-center pb-100">
-              <Button color="primary" className="btn btn-lg btn-primary" id="listToolTip" onClick={this.toggleListView} >
-                <i className="fas fa-bars" />
-              </Button>
-              <Tooltip placement="left" isOpen={listToolTipOpen} target="listToolTip" toggle={() => {this.setState({ listToolTipOpen: !listToolTipOpen })}}>
-                  Show events as a list
-              </Tooltip>
-              <ListFeature toggleListView = {this.toggleListView} events={events} groups={groups} csrfToken={csrfToken} user={user} modal={listViewIsOpen} images={images} />
-            </div>
-
-
-          </div>
         );
     }
 }

@@ -1,75 +1,87 @@
+/*  ListFeature.jsx
+**
+** When ListFeature is activated, the main site changes to display all the events the
+** user is a part of as a list. Each event is displayed with the same styling as the
+** blog slider in Preview.jsx.
+*/
+
+
+/** TODO: Implement null event, organize events in date/time order, href for event name **/
+
 import React from 'react';
 import PropTypes from 'prop-types';
-
-import { Modal, ModalBody } from 'reactstrap';
-import EventDetails from './EventDetails.jsx';
 
 
 class ListFeature extends React.Component {
     constructor(props) {
         super(props);
 
-        this.state = {
-            eventCards: [],
-            e: {},
-            detailModal: false,
-            unmountOnClose: false,
-            events: [],
-            currentImage: "/resources/img/default/default_group.png",
-            customImageSelection: false
-        };
-        this.test = this.test.bind(this);
-    }
-    test() {
-      alert("function executed on clicking p");
     }
 
+    /* Return display of every event in a list format */
     render() {
-        const { events } = this.state;
-        const { modal, toggleListView, user, isUserInGroup } = this.props;
+      const { events } = this.props;
+      const imagePath = event.image ? "/resources/img/buildings/" + event.image : "/resources/img/buildings/defaultImage.png";
 
+
+      /* Display an empty event if there are no events to display
+      if (event == null) {
+          event = {
+              image: "defaultImage.png",
+              startDate: "10-28-2015",
+              startTime: "0:00",
+              name: "Hmm... Nothing going on this week",
+              description: "Add your event here",
+              endDate: "10-28-2015",
+              endTime: "11:59",
+              Group: {
+                  id: "#",
+                  name: "Display Calendar"
+              }
+          }
+      }
+
+      /* Variable contains each event, to be displayed in a chronological list
+         Issue with display, not in chronological order, in order that events
+         were added.
+
+         Events need to have unique names to be mapped. Link attached to event name
+         doesn't lead anywhere/exist its just for styling
+      */
+
+      return events.map(tmp => {
         return (
-            <div>
-                <Modal size="lg" isOpen={modal} toggle={toggleListView} unmountOnClose={this.state.unmountOnClose}>
-                    <ModalBody>
-                      <React.Fragment>
-                        {this.props.events.map(ev => (
-                          <p>
-                          {ev.name}, from {ev.startTime} to {ev.endTime} on {ev.startDate}
-                          </p>
-                        ))}
-                      </React.Fragment>
-                    </ModalBody>
-                </Modal>
+            <div key={ tmp.name } className = "blog-slider">
+              <div className="blog-slider__item swiper-slide">
+                  <div className="blog-slider__img">
+                    <img src={ "/resources/img/buildings/" + tmp.image }/>
+                  </div>
+                  <div className="blog-slider__content">
+                      <span className="blog-slider__code">{tmp.startDate} at {tmp.startTime}</span>
+                      <div className="blog-slider__title"><a href = "#">{tmp.name}</a></div>
+                      <div className="blog-slider__text">
+                          { tmp.description.length > 175 &&
+                              tmp.description.slice(0,175) + '...'
+                          }
+                          { tmp.description.length <= 175 &&
+                              tmp.description
+                          }
+                      </div>
+                      <a href={`/group/${tmp.Group.id}`} className="blog-slider__button">
+                          {tmp.Group.name}
+                      </a>
+                  </div>
+              </div>
+                <br />
             </div>
         );
+   })
     }
-}
 
-// returns new Date Type
-function convertStringsToInsertFormat(date, time) {
-    // yyyy/MM/dd to [yyyy, MM, dd]
-    const dateArray = date.split('-');
-    // hh:mm to [hh, mm]
-    const timeArray = time.split(':');
-
-    return new Date(
-        Number(dateArray[0]),
-        Number(dateArray[1] - 1),
-        Number(dateArray[2]),
-        Number(timeArray[0]),
-        Number(timeArray[1])
-        );
 }
 
 ListFeature.propTypes = {
-    groups: PropTypes.arrayOf(PropTypes.object).isRequired,
     events: PropTypes.arrayOf(PropTypes.object).isRequired,
-    csrfToken: PropTypes.string.isRequired,
-    modal: PropTypes.bool.isRequired,
-    images: PropTypes.arrayOf(PropTypes.string).isRequired,
-    user: PropTypes.object.isRequired,
-    isUserInGroup: PropTypes.bool,
-}
+};
 
 export default ListFeature;
