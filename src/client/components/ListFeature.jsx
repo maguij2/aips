@@ -6,7 +6,9 @@
 */
 
 
-/** TODO: organize events in date/time order, href for event name **/
+/** TODO: fix link for event names/display calendar button
+*** add new event button? option to delete events from list view?
+ **/
 
 import React from 'react';
 import PropTypes from 'prop-types';
@@ -39,43 +41,19 @@ class ListFeature extends React.Component {
                 name: "Display Calendar"
             }
         };
-        return(
-          <div key={ event.name } className = "blog-slider">
-            <div className="blog-slider__item swiper-slide">
-                <div className="blog-slider__img">
-                  <img src={ "/resources/img/buildings/" + event.image }/>
-                </div>
-                <div className="blog-slider__content">
-                    <span className="blog-slider__code">{event.startDate} at {event.startTime}</span>
-                    <div className="blog-slider__title"><a href = "#">{event.name}</a></div>
-                    <div className="blog-slider__text">
-                        { event.description.length > 175 &&
-                            event.description.slice(0,175) + '...'
-                        }
-                        { event.description.length <= 175 &&
-                            event.description
-                        }
-                    </div>
-                    <a href={`/group/${event.Group.id}`} className="blog-slider__button">
-                        {event.Group.name}
-                    </a>
-                </div>
-            </div>
-              <br />
-          </div>
-
-        );
+        events.push(event);
       }
 
       /* Variable contains each event, to be displayed in a chronological list
-         Issue with display, not in chronological order, in order that events
-         were added.
 
          Events need to have unique names to be mapped. Link attached to event name
          doesn't lead anywhere/exist its just for styling
       */
 
-      return events.map(tmp => {
+      let sortedEvents = events.slice().sort((a, b) =>
+       a.startDate.split('/').reverse().join().localeCompare(b.startDate.split('/').reverse().join())
+     );
+      return sortedEvents.map(tmp => {
         return (
             <div key={ tmp.name } className = "blog-slider">
               <div className="blog-slider__item swiper-slide">
