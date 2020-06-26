@@ -66,7 +66,7 @@ class MainPage extends React.Component {
            <div>
               <div className= "d-flex flex-row pl-2 fixed-center pt-3">
                   <Button onClick={this.toggleTheme} className="btn btn-lg" color="danger" outline>
-                      <i className="fa fa-desktop" />
+                      <i className= "fas fa-window-restore" />
                   </Button>
               </div>
               <ListFeature events={shownEvents} />
