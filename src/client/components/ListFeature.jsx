@@ -59,7 +59,7 @@ class ListFeature extends React.Component {
      const eventList = sortedEvents.map((tmp) => {
          return (
              // Images, description
-             <Col className= "col-6 pb-2">
+             <Col className= "col-4">
              <div key={ tmp.name } className = "list_card">
                <div>
                  <div className="list_card_title">{tmp.name}</div>
@@ -69,10 +69,10 @@ class ListFeature extends React.Component {
                  </span>
                  <br />
                  <div className="d-flex justify-content-between">
-                     { tmp.description.length > 175 &&
-                         tmp.description.slice(0,175) + '...'
+                     { tmp.description.length > 45 &&
+                         tmp.description.slice(0,45) + '...'
                      }
-                     { tmp.description.length <= 175 &&
+                     { tmp.description.length <= 45 &&
                          tmp.description
                      }
                  </div>
@@ -89,7 +89,7 @@ class ListFeature extends React.Component {
      })
      return(
        <div>
-       <Row className="row justify-content-around">
+       <Row className="justify-content-md-center">
            {eventList}
        </Row>
        </div>
