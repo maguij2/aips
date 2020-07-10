@@ -72,6 +72,7 @@ class Preview extends React.Component {
         const listView = this.state.listView;
 
         let event = events[this.state.currentEvent];
+        let nullEvent = false;
 
         if (event == null) {
             event = {
@@ -87,6 +88,8 @@ class Preview extends React.Component {
                     name: "Display Calendar"
                 }
             }
+            nullEvent = true;
+
         }
 
         const imagePath = event.image ? "/resources/img/buildings/" + event.image : "/resources/img/buildings/defaultImage.png";
@@ -124,7 +127,7 @@ class Preview extends React.Component {
               { listView == false && (
                 <div>
                 <div className= "d-flex flex-row pl-2 fixed-center pt-3">
-                    <Button onClick={this.toggleTheme} className="btn btn-lg" id="listToolTip" color="danger" outline>
+                    <Button onClick={this.toggleTheme} disabled = {nullEvent} className="btn btn-lg" id="listToolTip" color="danger" outline>
                         <i className="fa fa-list-ul" />
                     </Button>
                     </div>

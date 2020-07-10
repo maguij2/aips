@@ -17,64 +17,11 @@ import { Card, CardHeader, CardBody,
 class ListFeature extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {
-          currentPage: 1,
-          totalPages: 1,
-        };
-        this.generatePagination = this.generatePagination.bind(this);
-        this.changePage = this.changePage.bind(this);
 
     }
-
-    //page navigator
-    generatePagination(paginationItems) {
-        const { currentPage, totalPages } = this.state;
-        return (
-            <Pagination aria-label='pagenavigation'>
-                <PaginationItem>
-                    <PaginationLink
-                        first
-                        onClick={(e) => this.changePage(e, 1)}
-                        disabled={currentPage === 1}
-                    />
-                </PaginationItem>
-                <PaginationItem>
-                    <PaginationLink
-                        previous
-                        onClick={(e) => this.changePage(e, currentPage - 1)}
-                        disabled={currentPage - 1 < 1}
-                    />
-                </PaginationItem>
-                {paginationItems}
-                <PaginationItem>
-                    <PaginationLink
-                        next
-                        onClick={(e) => this.changePage(e, currentPage + 1)}
-                        disabled={currentPage + 1 > totalPages}
-                    />
-                </PaginationItem>
-                <PaginationItem>
-                    <PaginationLink
-                        last
-                        onClick={(e) => this.changePage(e, totalPages)}
-                        disabled={currentPage === totalPages}
-                    />
-                </PaginationItem>
-            </Pagination>
-        );
-    }
-
-    async changePage(e, page) {
-        e.preventDefault();
-
-        await this.setState({ currentPage: page });
-    }
-
     /* Return display of every event in a list format */
     render() {
       const { events } = this.props;
-      const { totalPages } = this.state;
-
       // Display an empty event if there are no events to display
       if (events === undefined || events.length == 0) {
         let event = {
@@ -92,9 +39,11 @@ class ListFeature extends React.Component {
         };
         events.push(event);
       }
-     const eventList = events.map((tmp) => {
+    // Only the next 6 upcoming events are shown, can't get scrollbar to work + showing all events at once
+    // may cause website to crash if there are a lot of events
+     let eventRange = events.length < 6 ? events.length : 6;
+     const eventList = events.slice(0, eventRange).map((tmp) => {
          return (
-             // Images, description
              <Col className= "col-2">
              <div key={ tmp.name } className = "list_card">
                <div>
@@ -123,20 +72,6 @@ class ListFeature extends React.Component {
 
          );
      })
-
-     const paginationItems = [];
-     for (let page = 1; page <= totalPages; page++) {
-         paginationItems.push(
-             <PaginationItem key={page}>
-                 <PaginationLink onClick={(e) => this.changePage(e, page)}>
-                     {page}
-                 </PaginationLink>
-             </PaginationItem>
-         );
-     }
-
-     const pagination = this.generatePagination(paginationItems);
-
 
      return(
        <div>
