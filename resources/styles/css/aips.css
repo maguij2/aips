@@ -248,3 +248,21 @@ body {
 .card_image {
   width: 150px;
   height: auto; }
+
+.list_card {
+  width: 30%;
+  position: left;
+  max-width: 800px;
+  margin: auto;
+  margin-top: 50px;
+  background: #fff;
+  box-shadow: 0px 14px 80px rgba(34, 35, 58, 0.2);
+  padding: 25px;
+  height: 40%;
+  z-index: -1;
+}
+
+.list_card_title {
+  font-size: 20px;
+  color: black;
+}

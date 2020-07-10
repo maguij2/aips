@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-
+import ListFeature from './ListFeature.jsx';
 import Swiper from 'swiper';
-
+import { Collapse, Button, ButtonGroup, Tooltip } from 'reactstrap';
 class Preview extends React.Component {
 
     constructor(props) {
@@ -12,6 +12,9 @@ class Preview extends React.Component {
             currentEvent: 0,
             calendarIsOpen: false,
             detailModal: false,
+            listView: false,
+            listToolTipOpen: false,
+            sliderToolTipOpen: false,
         };
 
         this.swiper = new Swiper('.blog-slider', {
@@ -31,6 +34,8 @@ class Preview extends React.Component {
         // Swap events every 10 seconds
         this.timer = 10000;
         this.toggleEventDetails = this.toggleEventDetails.bind(this);
+        //list mode feature
+        this.toggleTheme = this.toggleTheme.bind(this);
     }
 
     // Advance the slider to the next event
@@ -55,8 +60,17 @@ class Preview extends React.Component {
         await this.setState({ selectedEvent: selectedEvent[0], detailModal: !this.state.detailModal });
     }
 
+    //function switches theme from list to !list
+    toggleTheme() {
+        this.setState({ listView: !this.state.listView });
+    }
+
     render() {
         const { events } = this.props;
+        let listToolTipOpen = this.state.listToolTipOpen;
+        const sliderToolTipOpen = this.state.sliderToolTipOpen;
+        const listView = this.state.listView;
+
         let event = events[this.state.currentEvent];
 
         if (event == null) {
@@ -107,8 +121,19 @@ class Preview extends React.Component {
 
         return (
             <React.Fragment>
-                {blog_slider}
-                {/* { selectedEvent && selectedEvent.Group &&
+              { listView == false && (
+                <div>
+                <div className= "d-flex flex-row pl-2 fixed-center pt-3">
+                    <Button onClick={this.toggleTheme} className="btn btn-lg" id="listToolTip" color="danger" outline>
+                        <i className="fa fa-list-ul" />
+                    </Button>
+                    </div>
+                    {blog_slider}
+
+                </div>
+              )
+
+                /* { selectedEvent && selectedEvent.Group &&
                     <Modal isOpen={this.state.detailModal} toggle={this.toggleEventDetails} unmountOnClose={this.state.unmountOnClose}>
                         <ModalHeader>{selectedEvent.name}</ModalHeader>
                         <ModalBody>
@@ -131,7 +156,21 @@ class Preview extends React.Component {
                             </div>
                         </ModalBody>
                     </Modal>
-                } */}
+                } */
+              }
+              { listView == true && (
+                <div>
+                <div className= "d-flex flex-row pl-2 fixed-center pt-3">
+                    <Button onClick={this.toggleTheme} className="btn btn-lg" id="sliderToolTip" color="danger" outline>
+                        <i className="fas fa-window-maximize" />
+                    </Button>
+
+                </div>
+                <ListFeature events = {this.props.events} />
+                </div>
+
+              )
+              }
             </React.Fragment>
         );
     }

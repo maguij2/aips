@@ -23,7 +23,6 @@ class ListFeature extends React.Component {
     /* Return display of every event in a list format */
     render() {
       const { events } = this.props;
-      const imagePath = event.image ? "/resources/img/buildings/" + event.image : "/resources/img/buildings/defaultImage.png";
 
 
       // Display an empty event if there are no events to display
@@ -54,29 +53,29 @@ class ListFeature extends React.Component {
        a.startDate.split('/').reverse().join().localeCompare(b.startDate.split('/').reverse().join())
      );
       return sortedEvents.map(tmp => {
-        return (
-            <div key={ tmp.name } className = "blog-slider">
-              <div className="blog-slider__item swiper-slide">
-                  <div className="blog-slider__img">
-                    <img src={ "/resources/img/buildings/" + tmp.image }/>
-                  </div>
-                  <div className="blog-slider__content">
-                      <span className="blog-slider__code">{tmp.startDate} at {tmp.startTime}</span>
-                      <div className="blog-slider__title"><a href = "#">{tmp.name}</a></div>
-                      <div className="blog-slider__text">
-                          { tmp.description.length > 175 &&
-                              tmp.description.slice(0,175) + '...'
-                          }
-                          { tmp.description.length <= 175 &&
-                              tmp.description
-                          }
-                      </div>
-                      <a href={`/group/${tmp.Group.id}`} className="blog-slider__button">
-                          {tmp.Group.name}
-                      </a>
-                  </div>
-              </div>
+        return ( 
+            <div key={ tmp.name } className = "list_card">
+              <div>
+                <div className="list_card_title">{tmp.name}</div>
+                <hr />
+                <span className="d-flex justify-content-between">
+                  <img src={ "/resources/img/buildings/" + tmp.image } width = "100%"/>
+                </span>
                 <br />
+                <div className="d-flex justify-content-between">
+                    { tmp.description.length > 175 &&
+                        tmp.description.slice(0,175) + '...'
+                    }
+                    { tmp.description.length <= 175 &&
+                        tmp.description
+                    }
+                </div>
+                <span className="d-flex justify-content-between"> from {tmp.startTime}, {tmp.startDate}</span>
+                <span className="d-flex justify-content-between"> to {tmp.endTime}, {tmp.endDate}</span>
+                < hr/>
+                Hosted by <a href={`/group/${tmp.Group.id}`}> {tmp.Group.name}</a>
+
+              </div>
             </div>
         );
    })
