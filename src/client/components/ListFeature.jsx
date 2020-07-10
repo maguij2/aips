@@ -52,8 +52,9 @@ class ListFeature extends React.Component {
       let sortedEvents = events.slice().sort((a, b) =>
        a.startDate.split('/').reverse().join().localeCompare(b.startDate.split('/').reverse().join())
      );
-      return sortedEvents.map(tmp => {
-        return ( 
+      return( <div className = "container">
+        {sortedEvents.map(tmp => {
+        return (
             <div key={ tmp.name } className = "list_card">
               <div>
                 <div className="list_card_title">{tmp.name}</div>
@@ -78,7 +79,7 @@ class ListFeature extends React.Component {
               </div>
             </div>
         );
-   })
+   }) } </div>);
     }
 
 }
