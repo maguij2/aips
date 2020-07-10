@@ -250,7 +250,8 @@ body {
   height: auto; }
 
 .list_card {
-  width: 50%;
+  display: flex;
+  width: 100%;
   position: left;
   max-width: 800px;
   margin: auto;
@@ -260,16 +261,8 @@ body {
   padding: 25px;
   height: 90%;
   z-index: -1;
-  border-radius: 5%;
-}
+  border-radius: 5%; }
 
 .list_card_title {
   font-size: 20px;
-  color: black;
-}
-.container {
-  grid-template-columns: 100px 50px 100px;
-  grid-template-rows: 80px auto 80px;
-  column-gap: 10px;
-  row-gap: 15px;
-}
+  color: black; }

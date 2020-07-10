@@ -6,10 +6,6 @@
 */
 
 
-/** TODO: fix link for event names/display calendar button
-*** add new event button? option to delete events from list view?
- **/
-
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Card, CardHeader, CardBody,
@@ -21,13 +17,63 @@ import { Card, CardHeader, CardBody,
 class ListFeature extends React.Component {
     constructor(props) {
         super(props);
+        this.state = {
+          currentPage: 1,
+          totalPages: 1,
+        };
+        this.generatePagination = this.generatePagination.bind(this);
+        this.changePage = this.changePage.bind(this);
 
+    }
+
+    //page navigator
+    generatePagination(paginationItems) {
+        const { currentPage, totalPages } = this.state;
+        return (
+            <Pagination aria-label='pagenavigation'>
+                <PaginationItem>
+                    <PaginationLink
+                        first
+                        onClick={(e) => this.changePage(e, 1)}
+                        disabled={currentPage === 1}
+                    />
+                </PaginationItem>
+                <PaginationItem>
+                    <PaginationLink
+                        previous
+                        onClick={(e) => this.changePage(e, currentPage - 1)}
+                        disabled={currentPage - 1 < 1}
+                    />
+                </PaginationItem>
+                {paginationItems}
+                <PaginationItem>
+                    <PaginationLink
+                        next
+                        onClick={(e) => this.changePage(e, currentPage + 1)}
+                        disabled={currentPage + 1 > totalPages}
+                    />
+                </PaginationItem>
+                <PaginationItem>
+                    <PaginationLink
+                        last
+                        onClick={(e) => this.changePage(e, totalPages)}
+                        disabled={currentPage === totalPages}
+                    />
+                </PaginationItem>
+            </Pagination>
+        );
+    }
+
+    async changePage(e, page) {
+        e.preventDefault();
+
+        await this.setState({ currentPage: page });
     }
 
     /* Return display of every event in a list format */
     render() {
       const { events } = this.props;
-
+      const { totalPages } = this.state;
 
       // Display an empty event if there are no events to display
       if (events === undefined || events.length == 0) {
@@ -46,20 +92,10 @@ class ListFeature extends React.Component {
         };
         events.push(event);
       }
-
-      /* Variable contains each event, to be displayed in a chronological list
-
-         Events need to have unique names to be mapped. Link attached to event name
-         doesn't lead anywhere/exist its just for styling
-      */
-
-      let sortedEvents = events.slice().sort((a, b) =>
-       a.startDate.split('/').reverse().join().localeCompare(b.startDate.split('/').reverse().join())
-     );
-     const eventList = sortedEvents.map((tmp) => {
+     const eventList = events.map((tmp) => {
          return (
              // Images, description
-             <Col className= "col-4">
+             <Col className= "col-2">
              <div key={ tmp.name } className = "list_card">
                <div>
                  <div className="list_card_title">{tmp.name}</div>
@@ -87,9 +123,24 @@ class ListFeature extends React.Component {
 
          );
      })
+
+     const paginationItems = [];
+     for (let page = 1; page <= totalPages; page++) {
+         paginationItems.push(
+             <PaginationItem key={page}>
+                 <PaginationLink onClick={(e) => this.changePage(e, page)}>
+                     {page}
+                 </PaginationLink>
+             </PaginationItem>
+         );
+     }
+
+     const pagination = this.generatePagination(paginationItems);
+
+
      return(
        <div>
-       <Row className="justify-content-md-center">
+       <Row className = "pl-2 pr-2">
            {eventList}
        </Row>
        </div>

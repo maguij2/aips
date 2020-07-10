@@ -1,0 +1,18 @@
+.list_card {
+  width: 100%;
+  position: left;
+  max-width: 800px;
+  margin: auto;
+  margin-top: 50px;
+  background: #fff;
+  box-shadow: 0px 14px 80px rgba(34, 35, 58, 0.2);
+  padding: 25px;
+  height: 90%;
+  z-index: -1;
+  border-radius: 5%;
+}
+
+.list_card_title {
+  font-size: 20px;
+  color: black;
+}
