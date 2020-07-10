@@ -12,6 +12,10 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Card, CardHeader, CardBody,
+    CardText, CardImg, Col, Row, Nav,
+    Pagination, PaginationItem, PaginationLink,
+    Badge } from 'reactstrap';
 
 
 class ListFeature extends React.Component {
@@ -52,35 +56,65 @@ class ListFeature extends React.Component {
       let sortedEvents = events.slice().sort((a, b) =>
        a.startDate.split('/').reverse().join().localeCompare(b.startDate.split('/').reverse().join())
      );
-      return( <div className = "container">
-        {sortedEvents.map(tmp => {
-        return (
-            <div key={ tmp.name } className = "list_card">
-              <div>
-                <div className="list_card_title">{tmp.name}</div>
-                <hr />
-                <span className="d-flex justify-content-between">
-                  <img src={ "/resources/img/buildings/" + tmp.image } width = "100%"/>
-                </span>
-                <br />
-                <div className="d-flex justify-content-between">
-                    { tmp.description.length > 175 &&
-                        tmp.description.slice(0,175) + '...'
-                    }
-                    { tmp.description.length <= 175 &&
-                        tmp.description
-                    }
-                </div>
-                <span className="d-flex justify-content-between"> from {tmp.startTime}, {tmp.startDate}</span>
-                <span className="d-flex justify-content-between"> to {tmp.endTime}, {tmp.endDate}</span>
-                < hr/>
-                Hosted by <a href={`/group/${tmp.Group.id}`}> {tmp.Group.name}</a>
+     const eventList = sortedEvents.map((tmp) => {
+         return (
+             // Images, description
+             <Col className="col-5 pt-4" key={tmp.name}>
+                 <Card className="text-center" body outline color="secondary">
+                     <Row>
+                         <Col className="d-flex justify-content-center" md="20" lg="3">
+                             <div className="card_image">
+                                 <CardImg src={"/resources/img/buildings/" + tmp.image} />
+                             </div>
+                         </Col>
+                         <Col md="12" lg="9">
+                             <CardHeader>
+                                 <Row>
+                                     <Col md="8" lg="8">
 
-              </div>
-            </div>
-        );
-   }) } </div>);
-    }
+                                         {tmp.name}
+                                     </Col>
+                                 <Col md="4" lg="4">
+                                     {
+                                     <Badge
+                                         color="danger"
+                                         pill>
+                                          <a href={`/group/${tmp.Group.id}`}>
+                                             {tmp.Group.name}</a>
+                                     </Badge>
+                                     }
+                                 </Col>
+                                 </Row>
+                             </CardHeader>
+                             <CardBody>
+
+                             <CardText>
+                                 {"from " + tmp.startTime + ", " + tmp.startDate}
+                                 {"   to " + tmp.endTime + ", " + tmp.endDate+ "\n"}
+                                 { tmp.description.length > 210 &&
+                                     tmp.description.slice(0,210) + '...'
+                                 }
+                                 { tmp.description.length <= 210 &&
+                                     tmp.description
+                                 }
+                             </CardText>
+                             </CardBody>
+                         </Col>
+                     </Row>
+
+                 </Card>
+             </Col>
+         );
+     })
+     return(
+       <div>
+       <Row className="row justify-content-around">
+           {eventList}
+       </Row>
+       </div>
+     );
+   };
+
 
 }
 
