@@ -14,7 +14,7 @@ class RecentActivity extends React.Component {
         this.state = {
             posts: [],
         };
-        
+
         this.generatePosts = this.generatePosts.bind(this);
     }
 
@@ -30,8 +30,9 @@ class RecentActivity extends React.Component {
             return (
                 <Col className="col-3 pb-4" key={post.id}>
                     <Card body outline color="danger" className="d-flex justify-content-center">
-                    <CardHeader color="danger">{post.title} ~ <a href={`/group/${post.Group.id}`}>{post.Group.name}</a> ~</CardHeader>
-                        <CardBody>
+                    <CardHeader color="danger">{post.title}</CardHeader>
+                        <CardBody className="text-center">
+                            <CardText><sup className = "text-muted">{"Public Post from "} <a href={`/group/${post.Group.id}`}>{post.Group.name}</a></sup> </CardText>
                             <CardText>{post.content}</CardText>
                             <CardText className="text-right">
                                 <small className="text-muted">Updated {post.updatedAt}</small>

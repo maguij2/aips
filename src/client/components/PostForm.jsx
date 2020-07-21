@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Label, Input, Form } from 'reactstrap';
+import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Label, Input, Form, FormGroup, FormText, CustomInput } from 'reactstrap';
 
 import { AvForm, AvField } from 'availity-reactstrap-validation';
 
@@ -18,6 +18,7 @@ class PostForm extends React.Component {
             groupId: undefined,
             title: '',
             content: '',
+            privateEvent: false,
         }
 
         this.generateGroupOptions = this.generateGroupOptions.bind(this);
@@ -44,7 +45,7 @@ class PostForm extends React.Component {
                 <option key={group.id} value={group.id}>{group.name}</option>
             );
         });
-        
+
         return groupOptions;
     }
 
@@ -64,6 +65,8 @@ class PostForm extends React.Component {
     setGroupId(e) {
         this.setState({ groupId: e.target.value });
     }
+    togglePrivate = event =>
+      this.setState({ privateEvent: event.target.checked })
 
     async createHandler() {
         const { groupId, title, content } = this.state;
@@ -81,6 +84,8 @@ class PostForm extends React.Component {
         const { togglePostForm } = this.props;
         const groups = this.props.groups || [];
         const groupOptions = this.generateGroupOptions(groups);
+        const {privateEvent} = this.state.privateEvent;
+
 
         return (
             <div>
@@ -99,8 +104,18 @@ class PostForm extends React.Component {
                                 <option value="default" disabled>--Select the Group--</option>
                                 {groupOptions}
                             </AvField>
+
+                            <FormGroup>
+                                <CustomInput type="checkbox" id="privateFormCheckbox" label="Private" checked={privateEvent} onChange = {this.togglePrivate}/>
+                                <FormText className="text-muted">Private posts will only be visible to members of your group</FormText>
+                            </FormGroup>
+
                             <AvField name="title" label="Title" onChange={this.setTitle} required />
                         </AvForm>
+
+
+
+
                         <Label for="content">Content</Label>
                         <Input type="textarea" id="content" placeholder="What's going on?" onChange={this.setContent} rows={5} required />
                         <ModalFooter>

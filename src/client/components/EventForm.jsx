@@ -1,7 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { Col, Row, Card, CardBody, CustomInput, Button, Modal, ModalHeader, ModalBody, ModalFooter, Form, FormGroup, Label, Input, Dropdown, DropdownMenu, DropdownToggle, DropdownItem } from 'reactstrap';
+
+import { Col, Tooltip, Row, Card, CardBody, CustomInput, Button, Modal, ModalHeader, ModalBody, ModalFooter, Form, FormText, FormGroup, Label, Input, Dropdown, DropdownMenu, DropdownToggle, DropdownItem } from 'reactstrap';
 import { AvForm, AvField } from 'availity-reactstrap-validation';
 import axios from 'axios';
 
@@ -23,6 +24,8 @@ class EventForm extends React.Component {
                 imageName: '',
                 repeats: 'Never',
             },
+            privateEvent: false,
+            menuToolTipOpen: false,
             showCustomDates: false,
             repeatDropdownOpen: false,
         };
@@ -103,7 +106,7 @@ class EventForm extends React.Component {
                 <option key={group.id} value={group.id}>{group.name}</option>
             );
         });
-        
+
         return groupOptions;
     }
 
@@ -223,6 +226,8 @@ class EventForm extends React.Component {
         }
         this.setState({ showCustomDates: !showCustomDates });
     }
+    togglePrivate = event =>
+      this.setState({ privateEvent: event.target.checked })
 
     validate() {
         const { startDate, startTime, endDate, endTime, name, groupId } = this.state.newEvent;
@@ -247,7 +252,7 @@ class EventForm extends React.Component {
     }
 
     render() {
-        const { showCustomDates, newEvent, repeatDropdownOpen } = this.state;
+        const { showCustomDates, newEvent, repeatDropdownOpen, privateEvent, privateToolTipOpen } = this.state;
         const { images } = this.props;
 
         const groups = this.props.groups || [];
@@ -274,10 +279,17 @@ class EventForm extends React.Component {
                         <FormGroup>
                             <Input type="text" id="name" onChange={this.setName} placeholder="Title" />
                         </FormGroup>
+
+                        <FormGroup>
+                            <CustomInput type="checkbox" id="privateCheckbox" label="Private" checked={privateEvent} onChange = {this.togglePrivate}/>
+                            <FormText className="text-muted">Private events will only be visible to members of your group</FormText>
+                        </FormGroup>
+
                         <FormGroup>
                             <CustomInput type="checkbox" id="customCheckbox" label="All-day" checked={!showCustomDates} onChange={this.toggleAllDay} />
                         </FormGroup>
-                        
+
+
                             <FormGroup>
                                 <Row>
                                     <Col xs="2" sm="2" md="2">Starts</Col>
@@ -360,12 +372,14 @@ class EventForm extends React.Component {
                     <Button onClick={this.toggleForm} color="secondary">Cancel</Button>
                 </ModalFooter>
             </Modal>
+
         );
+
     }
 
 }
 
-// returns e.g 'Dec' ==> 12 
+// returns e.g 'Dec' ==> 12
 function convertMonthStringtoNumber(string) {
     switch(string){
         case 'Jan':
@@ -393,6 +407,7 @@ function convertMonthStringtoNumber(string) {
         case 'Dec':
             return '12';
     }
+
 }
 
 EventForm.propTypes = {

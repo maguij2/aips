@@ -52,7 +52,7 @@ class EventDetails extends React.Component {
 
     async addToGoogleCalendarHandler() {
         const { selectedEvent } = this.state;
-        
+
         await Swal.fire({
             title: 'Add Event to Google Calendar',
             type: 'question',
@@ -176,7 +176,7 @@ class EventDetails extends React.Component {
             selectedEvent.goingCount === 1 ? (
                 <React.Fragment>
                     {selectedEvent.goingCount} person going
-                </React.Fragment> ) : 
+                </React.Fragment> ) :
                 (
                     <React.Fragment>
                         {selectedEvent.goingCount} people going
@@ -188,7 +188,12 @@ class EventDetails extends React.Component {
             <React.Fragment>
                 { selectedEvent && selectedEvent.Group &&
                     <Modal isOpen={this.state.detailModal} toggle={this.toggle} unmountOnClose={this.state.unmountOnClose}>
-                        <ModalHeader close={googleButton}>{selectedEvent.name}</ModalHeader>
+                        <ModalHeader close={googleButton}>
+                        <div>{selectedEvent.name}</div>
+                        
+                        <sup><i>Public Event</i></sup>
+                        </ModalHeader>
+
                         <ModalBody>
                             { selectedEvent.image !== '' &&
                                 <div>
