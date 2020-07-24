@@ -38,6 +38,7 @@ class CalendarPanel extends React.Component {
                     start: start,
                     end: end,
                     title: event.name,
+                    isPrivate: event.privateEvent,
                 }
             );
         });
@@ -81,13 +82,7 @@ class CalendarPanel extends React.Component {
                     <ModalBody>
                         <div className="pb-2">
                             <Calendar
-                            eventPropGetter={ event=>({
-                              style: {
-                                backgroundColor: event.privateEvent && event.privateEvent === true
-                                ? "red"
-                                : "blue",
-                              }
-                            })}
+                            eventPropGetter={ event=>({style: {backgroundColor: !event.isPrivate  ? "#dc6130" : "#4a90e2",}})}
                             events={events}
 
                                 localizer={localizer}
