@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { Col, Row, Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import axios from 'axios';
 import Swal from 'sweetalert2';
+import EventForm from './EventForm.jsx';
 
 class EventDetails extends React.Component {
     constructor(props) {
@@ -15,8 +16,10 @@ class EventDetails extends React.Component {
             userIsGoing: false,
             authUrl: '',
             user: {},
+            eventFormIsOpen: false,
         };
 
+        this.toggleEventForm = this.toggleEventForm.bind(this);
         this.toggle = this.toggle.bind(this);
         this.addToGoogleCalendarHandler = this.addToGoogleCalendarHandler.bind(this);
         this.deleteHandler = this.deleteHandler.bind(this);
@@ -151,6 +154,34 @@ class EventDetails extends React.Component {
             );
         });
     }
+    /*async editHandler() {
+        const { selectedEvent } = this.state;
+
+        await axios.post('/event/going', {
+            eventId: selectedEvent.id,
+            _csrf: this.props.csrfToken,
+        })
+        .then((res) => {
+            if (res.status !== 200) {
+                throw new Error(res.statusText);
+            }
+            else {
+                this.setState({ userIsGoing: true });
+            }
+        })
+        .catch((err) => {
+            Swal.showValidationMessage(
+                `Failed: ${err}`
+            );
+        });
+    }*/
+    toggleEventForm(e) {
+        this.setState({ eventFormIsOpen: !this.state.eventFormIsOpen });
+        this.setState({detailModal: !this.state.detailModal});
+
+    }
+
+
 
     authorizeGoogleCalendar() {
         window.location = this.state.authUrl;
@@ -158,7 +189,7 @@ class EventDetails extends React.Component {
 
     render() {
         const { isUserInGroup } = this.props;
-        const { selectedEvent, userIsGoing, user } = this.state;
+        const { selectedEvent, userIsGoing, user, eventFormIsOpen } = this.state;
 
         const googleButton = (
             user.googleToken ? (
@@ -190,8 +221,12 @@ class EventDetails extends React.Component {
                     <Modal isOpen={this.state.detailModal} toggle={this.toggle} unmountOnClose={this.state.unmountOnClose}>
                         <ModalHeader close={googleButton}>
                         <div>{selectedEvent.name}</div>
-                        
-                        <sup><i>Public Event</i></sup>
+                        { !selectedEvent.privateEvent &&
+                          <sup><i>Public Event</i></sup>
+                        }
+                        { selectedEvent.privateEvent &&
+                          <sup><i>Private Event</i></sup>
+                        }
                         </ModalHeader>
 
                         <ModalBody>
@@ -228,7 +263,7 @@ class EventDetails extends React.Component {
                             <ModalFooter>
                                 <Row>
                                     <Col xs="6" sm="6" md="6">
-                                        <Button color="link"><i className="fas fa-user-edit"></i> Edit</Button>
+                                        <Button color="link" onClick={this.toggleEventForm}><i className="fas fa-user-edit"></i> Edit</Button>
                                     </Col>
                                     <Col xs="6" sm="6" md="6">
                                         <Button color="link" onClick={this.deleteHandler}><i className="fas fa-trash-alt"></i> Delete</Button>
@@ -238,6 +273,7 @@ class EventDetails extends React.Component {
                         }
                     </Modal>
                 }
+                <EventForm toggleEventForm={this.toggleEventForm} formModal={this.state.eventFormIsOpen} e={this.state.e || {}} groups={this.props.groups || []} csrfToken={this.props.csrfToken} images={this.props.images} edit={true} anEvent = {selectedEvent}/>
             </React.Fragment>
         );
     }
@@ -250,6 +286,7 @@ EventDetails.propTypes = {
     isUserInGroup: PropTypes.bool,
     events: PropTypes.arrayOf(PropTypes.object).isRequired,
     csrfToken: PropTypes.string.isRequired,
+    images: PropTypes.arrayOf(PropTypes.string).isRequired,
 };
 
 export default EventDetails;

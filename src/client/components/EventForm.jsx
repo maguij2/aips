@@ -23,8 +23,9 @@ class EventForm extends React.Component {
                 description: '',
                 imageName: '',
                 repeats: 'Never',
+                privateEvent: false,
             },
-            privateEvent: false,
+            isAPrivateEvent: false,
             menuToolTipOpen: false,
             showCustomDates: false,
             repeatDropdownOpen: false,
@@ -46,6 +47,8 @@ class EventForm extends React.Component {
         this.setRepeats = this.setRepeats.bind(this);
         this.toggleAllDay = this.toggleAllDay.bind(this);
         this.createHandler = this.createHandler.bind(this);
+        this.setPrivate = this.setPrivate.bind(this);
+        this.togglePrivate = this.togglePrivate.bind(this);
     }
 
     componentDidUpdate(prevProps){
@@ -213,6 +216,16 @@ class EventForm extends React.Component {
         }));
     }
 
+    setPrivate(e) {
+        const name = e.target.value;
+        this.setState((prevState) => ({
+            newEvent: {
+                ...prevState.newEvent,
+                privateEvent: privateEvent,
+            }
+        }));
+    }
+
     toggleAllDay() {
         const { showCustomDates } = this.state;
         if (showCustomDates) {
@@ -226,16 +239,26 @@ class EventForm extends React.Component {
         }
         this.setState({ showCustomDates: !showCustomDates });
     }
-    togglePrivate = event =>
-      this.setState({ privateEvent: event.target.checked })
+    togglePrivate() {
+      const { isAPrivateEvent } = this.state;
+      if (!isAPrivateEvent) {
+          this.setState((prevState) => ({
+              newEvent: {
+                  ...prevState.newEvent,
+                  privateEvent: true,
+              }
+          }));
+      }
+      this.setState({ isAPrivateEvent: !isAPrivateEvent });
+    }
 
     validate() {
-        const { startDate, startTime, endDate, endTime, name, groupId } = this.state.newEvent;
-        return startDate && startTime && endDate && endTime && name !== '' && groupId;
+        const { startDate, startTime, endDate, endTime, name, groupId, privateEvent} = this.state.newEvent;
+        return startDate && startTime && endDate && endTime && name !== '' && groupId && (privateEvent || !privateEvent) ;
     }
 
     async createHandler() {
-        const { groupId, startDate, startTime, endDate, endTime, name, description, imageName, repeats } = this.state.newEvent;
+        const { groupId, startDate, startTime, endDate, endTime, name, description, imageName, repeats, privateEvent} = this.state.newEvent;
         const res = await axios.post('/event', {
             groupId,
             startDate: startDate,
@@ -246,14 +269,16 @@ class EventForm extends React.Component {
             description,
             image: imageName,
             repeats: repeats,
+            privateEvent: privateEvent,
             _csrf: this.props.csrfToken
         });
         window.location.reload();
     }
 
     render() {
-        const { showCustomDates, newEvent, repeatDropdownOpen, privateEvent, privateToolTipOpen } = this.state;
+        const { showCustomDates, newEvent, repeatDropdownOpen, isAPrivateEvent, privateToolTipOpen } = this.state;
         const { images } = this.props;
+        let selectedEvent = this.props.anEvent;
 
         const groups = this.props.groups || [];
         const groupOptions = this.generateGroupOptions(groups);
@@ -261,7 +286,12 @@ class EventForm extends React.Component {
 
         return (
             <Modal isOpen={this.state.formModal} toggle={this.toggleForm} unmountOnClose={this.state.unmountOnClose}>
+              { this.props.edit == false &&
                 <ModalHeader toggle={this.toggleForm}>New Event</ModalHeader>
+              }
+              { this.props.edit == true &&
+                <ModalHeader toggle={this.toggleForm}>Edit Event</ModalHeader>
+              }
                 <ModalBody>
                     <AvForm>
                         <AvField
@@ -271,17 +301,27 @@ class EventForm extends React.Component {
                             onChange={this.setGroupId}
                             value={'default'}
                         >
+                          { !selectedEvent &&
                             <option value="default" disabled>Select a Group</option>
+                          }
+                          { selectedEvent && selectedEvent.Group &&
+                            <option value ="default"> {selectedEvent.Group.name}</option>
+                          }
                             {groupOptions}
                         </AvField>
                     </AvForm>
                     <Form>
                         <FormGroup>
+                          { !selectedEvent &&
                             <Input type="text" id="name" onChange={this.setName} placeholder="Title" />
+                          }
+                          { selectedEvent &&
+                            <Input type="text" id="name" onChange={this.setName} placeholder={selectedEvent.name} />
+                          }
                         </FormGroup>
 
                         <FormGroup>
-                            <CustomInput type="checkbox" id="privateCheckbox" label="Private" checked={privateEvent} onChange = {this.togglePrivate}/>
+                            <CustomInput type="checkbox" id="privateCheckbox" label="Private" checked={isAPrivateEvent} onChange = {this.togglePrivate}/>
                             <FormText className="text-muted">Private events will only be visible to members of your group</FormText>
                         </FormGroup>
 
@@ -348,14 +388,27 @@ class EventForm extends React.Component {
                             </Row>
                         </FormGroup>
                         <FormGroup>
+                          { !selectedEvent &&
                             <Input type="textarea" name="description" id="description" placeholder="Description" onChange={this.setDescription} />
+                          }
+                          { selectedEvent &&
+                            <Input type="textarea" name="description" id="description" placeholder={selectedEvent.description} onChange={this.setDescription} />
+                          }
                         </FormGroup>
                         <FormGroup>
                             <Label for="image">Event Image :</Label>
+                          { !selectedEvent &&
                             <Input type="select" name="image" id="image" value={newEvent.imageName === '' ? "" : newEvent.imageName} onChange={this.setImage} >
                                 <option value="">No Image</option>
                                 {generatedImages}
                             </Input>
+                          }
+                          { selectedEvent &&
+                            <Input type="select" name="image" id="image" value={selectedEvent.image != '' ? "" : newEvent.imageName} onChange={this.setImage} >
+                                <option value="">{selectedEvent.image}</option>
+                                {generatedImages}
+                            </Input>
+                          }
                             {/* <CustomInput type="file" id="exampleCustomFileBrowser" name="customFile" /> */}
                         </FormGroup>
                         { newEvent.imageName !== '' &&
@@ -368,7 +421,12 @@ class EventForm extends React.Component {
                     </Form>
                 </ModalBody>
                 <ModalFooter>
+                  { this.props.edit == false &&
                     <Button onClick={this.createHandler} color="primary" disabled={!this.validate()}>Post</Button>
+                  }
+                  { this.props.edit == true &&
+                    <Button onClick={this.createHandler} color="primary" disabled={!this.validate()}>Save</Button>
+                  }
                     <Button onClick={this.toggleForm} color="secondary">Cancel</Button>
                 </ModalFooter>
             </Modal>
@@ -417,6 +475,8 @@ EventForm.propTypes = {
     groups: PropTypes.arrayOf(PropTypes.object).isRequired,
     csrfToken: PropTypes.string.isRequired,
     images: PropTypes.arrayOf(PropTypes.string).isRequired,
+    edit: PropTypes.bool.isRequired,
+    anEvent: PropTypes.object.isRequired,
 }
 
 export default EventForm;

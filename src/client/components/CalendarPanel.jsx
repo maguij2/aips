@@ -41,7 +41,7 @@ class CalendarPanel extends React.Component {
                 }
             );
         });
-        
+
         return { events: events };
     }
 
@@ -55,6 +55,22 @@ class CalendarPanel extends React.Component {
         this.setState({ detailModal: !this.state.detailModal });
     }
 
+    /*eventStyleGetter(event, start, end, isSelected) {
+      //console.log(event);
+      let backgroundColor = "red";
+      if(event.privateEvent === true){
+        backgroundColor = "blue";
+      }
+
+      let style = {
+          backgroundColor: backgroundColor,
+      };
+      return {
+          style: style
+      };
+    }*/
+
+
     render() {
         const { events } = this.state;
         const { modal, toggleCalendar, user, isUserInGroup } = this.props;
@@ -64,25 +80,37 @@ class CalendarPanel extends React.Component {
                 <Modal size="lg" isOpen={modal} toggle={toggleCalendar} unmountOnClose={this.state.unmountOnClose}>
                     <ModalBody>
                         <div className="pb-2">
-                            <Calendar 
+                            <Calendar
+                            eventPropGetter={ event=>({
+                              style: {
+                                backgroundColor: event.privateEvent && event.privateEvent === true
+                                ? "red"
+                                : "blue",
+                              }
+                            })}
+                            events={events}
+
                                 localizer={localizer}
                                 defaultDate={new Date()}
                                 defaultView="month"
-                                events={events}
+
                                 style={{ height: "80vh" }}
                                 views={[ 'month', 'day' ]}
                                 selectable={true}
                                 onSelectSlot={this.toggleEventForm}
                                 onSelectEvent={this.toggleEventDetails}
+
                             />
                         </div>
-                        <EventForm 
+                        <EventForm
                             toggleEventForm={this.toggleEventForm}
                             formModal={this.state.formModal}
                             e={this.state.e || {}}
                             groups={this.props.groups || []}
                             csrfToken={this.props.csrfToken}
                             images={this.props.images}
+                            edit = {false}
+                            anEvent = {null}
                         />
                         <EventDetails
                             e={this.state.e || {}}
@@ -91,6 +119,7 @@ class CalendarPanel extends React.Component {
                             isUserInGroup={isUserInGroup}
                             events={this.props.events}
                             csrfToken={this.props.csrfToken}
+                            images={this.props.images}
                         />
                     </ModalBody>
                 </Modal>
