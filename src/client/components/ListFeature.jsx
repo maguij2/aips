@@ -9,8 +9,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Card, CardHeader, CardBody,
-    CardText, CardImg, Col, Row, Nav,
-    Pagination, PaginationItem, PaginationLink,
+    CardText, CardImg, Col, Container, Row, Nav,
+    Pagination, PaginationItem, PaginationLink, Button,
     Badge } from 'reactstrap';
 
 
@@ -41,13 +41,13 @@ class ListFeature extends React.Component {
       }
     // Only the next 6 upcoming events are shown, can't get scrollbar to work + showing all events at once
     // may cause website to crash if there are a lot of events
-     let eventRange = events.length < 6 ? events.length : 6;
+     let eventRange = events.length < 5 ? events.length : 5;
      const eventList = events.slice(0, eventRange).map((tmp) => {
          return (
-             <Col className= "col-2">
-             <div key={ tmp.name } className = "list_card">
+             <Col className = "col-2">
+             <div key={ tmp.name } className = {"list_card" + (tmp.privateEvent ? '_private' : '')}>
                <div>
-                 <div className="list_card_title">{tmp.name}</div>
+                 <div className = "list_card_title">{tmp.name}</div>
                  <hr />
                  <span className="d-flex justify-content-between">
                    <img src={ "/resources/img/buildings/" + tmp.image } width = "100%"/>
@@ -77,6 +77,13 @@ class ListFeature extends React.Component {
        <div>
        <Row className = "pl-2 pr-2">
            {eventList}
+           <br />
+           <div>
+
+           <Button className="btn btn-lg" color="danger" outline>
+               <i className="fas fa-calendar-alt fa-3x" />
+           </Button>
+           </div>
        </Row>
        </div>
      );

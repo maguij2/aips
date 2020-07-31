@@ -154,27 +154,7 @@ class EventDetails extends React.Component {
             );
         });
     }
-    /*async editHandler() {
-        const { selectedEvent } = this.state;
-
-        await axios.post('/event/going', {
-            eventId: selectedEvent.id,
-            _csrf: this.props.csrfToken,
-        })
-        .then((res) => {
-            if (res.status !== 200) {
-                throw new Error(res.statusText);
-            }
-            else {
-                this.setState({ userIsGoing: true });
-            }
-        })
-        .catch((err) => {
-            Swal.showValidationMessage(
-                `Failed: ${err}`
-            );
-        });
-    }*/
+    
     toggleEventForm(e) {
         this.setState({ eventFormIsOpen: !this.state.eventFormIsOpen });
         this.setState({detailModal: !this.state.detailModal});

@@ -40,10 +40,11 @@ class Menu extends React.Component {
         const { isOpen, postIsOpen, calendarIsOpen, menuToolTipOpen} = this.state;
         const { events, groups, csrfToken, images, user } = this.props;
 
+
         let publicEvents = [];
 
         for(let i = 0; i < events.length; i++){
-          if(!events[i].privateEvent){
+          if(!events[i].privateEvent || user){
             publicEvents.push(events[i]);
           }
         }
