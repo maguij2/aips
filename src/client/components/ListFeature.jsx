@@ -40,11 +40,13 @@ class ListFeature extends React.Component {
         events.push(event);
       }
     // Only the next 6 upcoming events are shown, can't get scrollbar to work + showing all events at once
-    // may cause website to crash if there are a lot of events
+    // may cause website to crash if there are a lot of events. Cards will be hidden when the window gets too small
+    // This should probably be changed to a carousel or a scrollbar.
      let eventRange = events.length < 6 ? events.length : 6;
-     const eventList = events.slice(0, eventRange).map((tmp) => {
+     let newEvents = events.slice(0, eventRange);
          return (
-             <Col className= "col-2">
+          <div className= "list_box">
+           { newEvents.map( tmp =>
              <div key={ tmp.name } className = "list_card">
                <div>
                  <div className="list_card_title">{tmp.name}</div>
@@ -68,19 +70,11 @@ class ListFeature extends React.Component {
 
                </div>
              </div>
-             </Col>
+           )}
 
+          </div>
          );
-     })
-
-     return(
-       <div>
-       <Row className = "pl-2 pr-2">
-           {eventList}
-       </Row>
-       </div>
-     );
-   };
+   }
 
 
 }

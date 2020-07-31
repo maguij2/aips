@@ -1,20 +1,27 @@
 .list_card {
   width: 100%;
   position: left;
-  max-width: 800px;
-  min-width: 200px;
-  margin: auto;
-  margin-top: 50px;
+  display: inline-block;
+  max-width: 230px;
+  min-width: 230px;
+  max-height: 450px;
+  min-height: 450px;
+  margin-left: 20px;
+  margin-top: 20px;
   background: #fff;
   box-shadow: 0px 14px 80px rgba(34, 35, 58, 0.2);
   padding: 25px;
   height: 90%;
   z-index: -1;
   border-radius: 5%;
-  overflow-x: hidden;
-}
+  overflow-x: hidden; }
+
+  .list_box {
+    flex-direction: row;
+    overflow-x: hidden;
+    overflow-y: hidden;
+    max-height: 490px; }
 
 .list_card_title {
   font-size: 20px;
-  color: black;
-}
+  color: black; }
