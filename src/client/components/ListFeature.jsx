@@ -56,10 +56,10 @@ class ListFeature extends React.Component {
                  </span>
                  <br />
                  <div className="d-flex justify-content-between">
-                     { tmp.description.length > 45 &&
-                         tmp.description.slice(0,45) + '...'
+                     { tmp.description.length > 25 &&
+                         tmp.description.slice(0, 25) + '...'
                      }
-                     { tmp.description.length <= 45 &&
+                     { tmp.description.length <= 25 &&
                          tmp.description
                      }
                  </div>
